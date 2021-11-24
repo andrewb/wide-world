@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, minimum-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Wide World</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      body {
+        background: #000;
+        touch-action: none;
+      }
+
+      input {
+        font-size: 16px;
+      }
+
+      #hud {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        background: #000;
+        color: #fff;
+      }
+
+      #loading {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+        color: #fff;
+      }
+      #loading span {
+        text-transform: uppercase;
+      }
+      #seed {
+        position: absolute;
+        right: 0;
+        z-index: 999;
+      }
+      canvas {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="hud" width="100" height="32" style="width: 50px; height:16px"></canvas>
+    <canvas id="c" width="1600" height="1200" style="width: 800px; height:600px"></canvas>
+    <input id="seed" value="1024" type="number" step="1" min="0" max="4294967295" inputmode="numeric" />
+    <div id="loading"><span>Loading</span></div>
+    <script src="m3.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        import("./index.mjs");
+      });
+    </script>
+  </body>
+</html>
