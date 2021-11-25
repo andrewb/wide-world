@@ -101,7 +101,8 @@ function initTileShader(gl, texture) {
 
   gl.bindVertexArray(null);
 
-  let _viewProjMatrix = m3.identity();
+  // Identity matrix
+  let _viewProjMatrix = [1, 0, 0, 0, 1, 0, 0, 0, 1];
 
   const _flush = () => {
     gl.useProgram(program);

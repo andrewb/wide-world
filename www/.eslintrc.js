@@ -1,13 +1,12 @@
 module.exports = {
   extends: ["airbnb-base", "prettier"],
+  ignorePatterns: ["lib"],
   env: {
     browser: true,
     jest: true,
   },
   globals: {
     ENV: true,
-    // TEMP
-    m3: true,
   },
   plugins: ["prettier"],
   rules: {

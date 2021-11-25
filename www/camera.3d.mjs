@@ -1,18 +1,23 @@
+const { mat3, vec2 } = window.glMatrix;
+
+function vec(x, y) {
+  return vec2.fromValues(x, y);
+}
 function getCameraMatrix(x, y, zoom, width, height) {
   const scale = 1 / zoom;
-  let mat = m3.identity();
-  mat = m3.translate(mat, x, y);
-  mat = m3.scale(mat, scale, scale);
+  const mat = mat3.create();
+  mat3.translate(mat, mat, vec(x, y));
+  mat3.scale(mat, mat, vec(scale, scale));
   // Center viewport on target
-  mat = m3.translate(mat, -width / 2, -height / 2);
+  mat3.translate(mat, mat, vec(-width / 2, -height / 2));
   return mat;
 }
 
 function getViewProjectionMatrix(x, y, zoom, width, height) {
-  const projMatrix = m3.projection(width, height);
+  const projMatrix = mat3.projection(mat3.create(), width, height);
   const cameraMatrix = getCameraMatrix(x, y, zoom, width, height);
-  const viewMatrix = m3.inverse(cameraMatrix);
-  return m3.multiply(projMatrix, viewMatrix);
+  const viewMatrix = mat3.invert(mat3.create(), cameraMatrix);
+  return mat3.multiply(mat3.create(), projMatrix, viewMatrix);
 }
 
 function getClipSpacePosition(clientX, clientY, canvas) {
@@ -83,9 +88,10 @@ function camera(gl, coord = { x: 0, y: 0 }) {
     zoomToScreenCoord(clientX, clientY, zoom) {
       const [clipX, clipY] = getClipSpacePosition(clientX, clientY, _canvas);
       // Position before zooming
-      const [preZoomX, preZoomY] = m3.transformPoint(
-        m3.inverse(_viewProjMatrix),
-        [clipX, clipY]
+      const [preZoomX, preZoomY] = vec2.transformMat3(
+        vec2.create(),
+        vec(clipX, clipY),
+        mat3.invert(mat3.create(), _viewProjMatrix)
       );
       // Set zoom
       _zoom = zoom;
@@ -98,9 +104,10 @@ function camera(gl, coord = { x: 0, y: 0 }) {
         this.height
       );
       // Position after zooming
-      const [postZoomX, postZoomY] = m3.transformPoint(
-        m3.inverse(_viewProjMatrix),
-        [clipX, clipY]
+      const [postZoomX, postZoomY] = vec2.transformMat3(
+        vec2.create(),
+        vec(clipX, clipY),
+        mat3.invert(mat3.create(), _viewProjMatrix)
       );
       // Camera needs to be moved the difference of before and after
       _x += preZoomX - postZoomX;
