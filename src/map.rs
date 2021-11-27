@@ -68,84 +68,85 @@ fn is_base_slope(tile: Tile) -> bool {
 }
 
 fn edge_slope(edge: (usize, usize), neighbors: &[(usize, usize)]) -> Slope {
-  let mut n = false;
-  let mut e = false;
-  let mut s = false;
-  let mut w = false;
-  let mut ne = false;
-  let mut se = false;
-  let mut sw = false;
-  let mut nw = false;
+  let mut n_e_s_w = vec![false, false, false, false];
+  let mut ne_se_sw_nw = vec![false, false, false, false];
 
-  for neighbor in neighbors {
-    if neighbor.0 < edge.0 && neighbor.1 == edge.1 {
-      n = true;
-    } else if neighbor.0 > edge.0 && neighbor.1 == edge.1 {
-      s = true;
-    } else if neighbor.0 == edge.0 && neighbor.1 < edge.1 {
-      w = true;
-    } else if neighbor.0 == edge.0 && neighbor.1 > edge.1 {
-      e = true;
-    } else if neighbor.0 < edge.0 && neighbor.1 < edge.1 {
-      nw = true;
-    } else if neighbor.0 < edge.0 && neighbor.1 > edge.1 {
-      ne = true;
-    } else if neighbor.0 > edge.0 && neighbor.1 < edge.1 {
-      sw = true;
-    } else if neighbor.0 > edge.0 && neighbor.1 > edge.1 {
-      se = true;
+  neighbors.iter().for_each(|&(n_row, n_col)| {
+    if n_row < edge.0 && n_col == edge.1 {
+      // n
+      n_e_s_w[0] = true;
+    } else if n_row == edge.0 && n_col > edge.1 {
+      // e
+      n_e_s_w[1] = true;
+    } else if n_row > edge.0 && n_col == edge.1 {
+      // s
+      n_e_s_w[2] = true;
+    } else if n_row == edge.0 && n_col < edge.1 {
+      // w
+      n_e_s_w[3] = true;
+    } else if n_row < edge.0 && n_col > edge.1 {
+      // ne
+      ne_se_sw_nw[0] = true;
+    } else if n_row > edge.0 && n_col > edge.1 {
+      // se
+      ne_se_sw_nw[1] = true;
+    } else if n_row > edge.0 && n_col < edge.1 {
+      // sw
+      ne_se_sw_nw[2] = true;
+    } else if n_row < edge.0 && n_col < edge.1 {
+      // nw
+      ne_se_sw_nw[3] = true;
     }
+  });
+
+  let n_4_count = n_e_s_w
+    .iter()
+    .fold(0, |acc, &v| if v { acc + 1 } else { acc });
+
+  if n_4_count == 1 {
+    return match (&n_e_s_w[..], &ne_se_sw_nw[..]) {
+      // 1 high
+      ([true, _, _, _], [_, true, _, _]) => Slope::NorthEast1,
+      ([_, true, _, _], [_, _, _, true]) => Slope::NorthEast1,
+      ([_, true, _, _], [_, _, true, _]) => Slope::SouthEast1,
+      ([_, _, true, _], [true, _, _, _]) => Slope::SouthEast1,
+      ([_, _, true, _], [_, _, _, true]) => Slope::SouthWest1,
+      ([_, _, _, true], [_, true, _, _]) => Slope::SouthWest1,
+      ([_, _, _, true], [true, _, _, _]) => Slope::NorthWest1,
+      ([true, _, _, _], [_, _, true, _]) => Slope::NorthWest1,
+      // Slope
+      ([true, _, _, _], _) => Slope::North,
+      ([_, true, _, _], _) => Slope::East,
+      ([_, _, true, _], _) => Slope::South,
+      ([_, _, _, true], _) => Slope::West,
+      _ => Slope::Unknown,
+    };
   }
 
-  if (n && s) || (w && e) {
-    Slope::Unknown
-  } else if e && sw {
-    Slope::SouthEast1
-  } else if w && ne {
-    Slope::NorthWest1
-  } else if e && nw {
-    Slope::NorthEast1
-  } else if w && se {
-    Slope::SouthWest1
-  } else if n && se {
-    return Slope::NorthEast1;
-  } else if n && sw {
-    return Slope::NorthWest1;
-  } else if s && nw {
-    return Slope::SouthWest1;
-  } else if s && ne {
-    return Slope::SouthEast1;
-  } else if n && !(e || w) {
-    Slope::North
-  } else if e && !(n || s) {
-    Slope::East
-  } else if s && !(e || w) {
-    Slope::South
-  } else if w && !(n || s) {
-    Slope::West
-  } else if n && e {
-    Slope::NorthEast1
-  } else if n && w {
-    Slope::NorthWest1
-  } else if s && e {
-    Slope::SouthEast1
-  } else if s && w {
-    Slope::SouthWest1
-  } else if ne && sw {
-    Slope::SaddleSouthEast
-  } else if nw && se {
-    Slope::SaddleNorthEast
-  } else if ne {
-    Slope::NorthEast3
-  } else if se {
-    Slope::SouthEast3
-  } else if sw {
-    Slope::SouthWest3
-  } else if nw {
-    Slope::NorthWest3
-  } else {
-    Slope::Unknown
+  if n_4_count == 2 {
+    // 1 high
+    return match &n_e_s_w[..] {
+      [true, true, _, _] => Slope::NorthEast1,
+      [_, true, true, _] => Slope::SouthEast1,
+      [_, _, true, true] => Slope::SouthWest1,
+      [true, _, _, true] => Slope::NorthWest1,
+      _ => Slope::Unknown,
+    };
   }
+
+  if n_4_count == 0 {
+    // 2 and 3 high
+    return match &ne_se_sw_nw[..] {
+      [true, _, true, _] => Slope::SaddleSouthEast,
+      [_, true, _, true] => Slope::SaddleNorthEast,
+      [true, _, _, _] => Slope::NorthEast3,
+      [_, true, _, _] => Slope::SouthEast3,
+      [_, _, true, _] => Slope::SouthWest3,
+      [_, _, _, true] => Slope::NorthWest3,
+      _ => Slope::Unknown,
+    };
+  }
+  Slope::Unknown
 }
 
 fn path_direction(edge: (usize, usize), neighbors: Vec<(usize, usize)>) -> Direction {
@@ -501,12 +502,13 @@ impl Map {
             .filter(|n| {
               let height = self.get_height(row, col);
               let n_height = self.get_height(n.0, n.1);
-              height > 2 && n_height < height
+              n_height < height
             })
             .collect::<Vec<(usize, usize)>>();
 
           if !neighbors.is_empty() {
             let direction = edge_slope((row, col), &neighbors);
+
             tile = match direction {
               Slope::NorthEast3 => Tile::RockNorthEast3,
               Slope::NorthWest3 => Tile::RockNorthWest3,
@@ -534,11 +536,16 @@ impl Map {
             .neighbors_8(row, col)
             .iter()
             .cloned()
-            .filter(|t| matches!(self.get_tile(t.0, t.1), Tile::Water))
+            .filter(|n| {
+              let height = self.get_height(row, col);
+              let n_height = self.get_height(n.0, n.1);
+              n_height < height
+            })
             .collect::<Vec<(usize, usize)>>();
 
           if !neighbors.is_empty() {
             let direction = edge_slope((row, col), &neighbors);
+
             tile = match direction {
               Slope::NorthEast3 => Tile::MarshNorthEast3,
               Slope::NorthWest3 => Tile::MarshNorthWest3,
