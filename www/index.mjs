@@ -160,12 +160,17 @@ Promise.all(fetchImageAssets(IMAGE_ASSETS)).then((loaded) => {
       keys.delete(e.key);
     });
 
-    document.getElementById("seed").addEventListener("change", async (e) => {
-      const parsed = clamp(parseInt(e.target.value, 10), 0, 4294967295);
-      state.level = undefined;
-      state.level = await game.load(ROW_COUNT, COL_COUNT, parsed);
-      state.lastTickTime = 0;
-    });
+    document
+      .getElementById("seed")
+      .querySelector("input")
+      .addEventListener("change", async (e) => {
+        const parsed = clamp(parseInt(e.target.value, 10), 0, 4294967295);
+        e.target.value = parsed;
+        e.target.blur();
+        state.level = undefined;
+        state.level = await game.load(ROW_COUNT, COL_COUNT, parsed);
+        state.lastTickTime = 0;
+      });
 
     document.getElementById("seed").addEventListener("keydown", (e) => {
       e.stopPropagation();

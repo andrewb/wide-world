@@ -12,16 +12,13 @@
         padding: 0;
         font-family: Arial, Helvetica, sans-serif;
       }
-
       body {
         background: #000;
         touch-action: none;
       }
-
       input {
-        font-size: 16px;
+        font-size: 12px;
       }
-
       #hud {
         position: absolute;
         top: 0;
@@ -30,7 +27,6 @@
         background: #000;
         color: #fff;
       }
-
       #loading {
         position: absolute;
         top: 0;
@@ -47,9 +43,18 @@
         text-transform: uppercase;
       }
       #seed {
+        padding: 0.5rem;
         position: absolute;
         right: 0;
+        background: #000;
+        color: #fff;
+        font-size: 12px;
         z-index: 999;
+      }
+      #seed input {
+        background: #000;
+        border: 1px solid #fff;
+        color: #fff;
       }
       canvas {
         display: block;
@@ -66,7 +71,12 @@
   <body>
     <canvas id="hud" width="100" height="32" style="width: 50px; height:16px"></canvas>
     <canvas id="c" width="1600" height="1200" style="width: 800px; height:600px"></canvas>
-    <input id="seed" value="1024" type="number" step="1" min="0" max="4294967295" inputmode="numeric" />
+    <div id="seed">
+      <label>
+        <span>Seed</span>
+        <input value="1024" type="number" step="1" min="0" max="4294967295" inputmode="numeric" />
+      </label>
+    </div>
     <div id="loading"><span>Loading</span></div>
     <script src="lib/gl-matrix.min.js"></script>
     <script>
