@@ -1,7 +1,8 @@
-import { Tile } from "./pkg/wide_world.js";
 import { clamp, to2d, toIso } from "./util.mjs";
 import { CELL_SIZE, SPRITE_ASPECT_RATIO } from "./config.mjs";
 import initTileShader from "./tile.image.mjs";
+
+const EMPTY_TILE = 255;
 
 export default function renderer(gl, tex) {
   const program = initTileShader(gl, tex);
@@ -50,7 +51,7 @@ export default function renderer(gl, tex) {
             tile1
           );
 
-          if (tile2 !== Tile.Empty) {
+          if (tile2 !== EMPTY_TILE) {
             // Raise overlay by 1 unit so it sits on top of the tile
             program.add(
               x,
