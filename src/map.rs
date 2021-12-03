@@ -386,9 +386,9 @@ impl Map {
     web_sys::console::log_1(&format!("Seed: {}", seed).into());
 
     let n1 = noise.set_seed(seed);
-    let n2 = noise.set_seed(seed + 1);
-    let n3 = noise.set_seed(seed + 2);
-    let n4 = noise.set_seed(seed + 3);
+    let n2 = noise.set_seed(seed.saturating_add(1));
+    let n3 = noise.set_seed(seed.saturating_add(2));
+    let n4 = noise.set_seed(seed.saturating_add(3));
     let mut rng = StdRng::seed_from_u64(seed as u64);
 
     let frequency = (self.col_count as f64 / 32.0).floor();
