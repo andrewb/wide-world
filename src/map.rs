@@ -125,11 +125,12 @@ fn edge_slope(edge: (usize, usize), neighbors: &[(usize, usize)]) -> Slope {
 
   if n_4_count == 2 {
     // 1 high
-    return match &n_e_s_w[..] {
-      [true, true, _, _] => Slope::NorthEast1,
-      [_, true, true, _] => Slope::SouthEast1,
-      [_, _, true, true] => Slope::SouthWest1,
-      [true, _, _, true] => Slope::NorthWest1,
+    // Check ne_se_sw_nw to make sure there is a "backing" tile
+    return match (&n_e_s_w[..], &ne_se_sw_nw[..]) {
+      ([true, true, _, _], [_, _, false, _]) => Slope::NorthEast1,
+      ([_, true, true, _], [_, _, _, false]) => Slope::SouthEast1,
+      ([_, _, true, true], [false, _, _, _]) => Slope::SouthWest1,
+      ([true, _, _, true], [_, false, _, _]) => Slope::NorthWest1,
       _ => Slope::Unknown,
     };
   }
@@ -524,7 +525,7 @@ impl Map {
               Slope::East => Tile::RockEast,
               Slope::South => Tile::RockSouth,
               Slope::West => Tile::RockWest,
-              _ => tile,
+              Slope::Unknown => Tile::RockAlt,
             };
             self.set_tile(row, col, tile);
           }
@@ -561,7 +562,7 @@ impl Map {
               Slope::East => Tile::MarshEast,
               Slope::South => Tile::MarshSouth,
               Slope::West => Tile::MarshWest,
-              _ => tile,
+              Slope::Unknown => Tile::MarshAlt,
             };
             self.set_tile(row, col, tile);
           }
@@ -586,7 +587,7 @@ impl Map {
             },
           );
         }
-
+        /*
         // Add reeds
         if tile == Tile::Marsh {
           let random = get_noise(&n4, nx * 3.0, ny * 3.0);
@@ -601,6 +602,7 @@ impl Map {
             },
           );
         }
+        */
       });
     });
 
