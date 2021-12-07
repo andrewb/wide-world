@@ -1,0 +1,11 @@
+export const DPI = 2;
+export const ROW_COUNT = 64;
+export const COL_COUNT = 64;
+export const CELL_SIZE = 32 * DPI;
+export const SPRITE_ASPECT_RATIO = 0.75;
+export const SCROLL_SPEED = 600;
+export const ZOOM_SPEED = 2;
+export const MIN_ZOOM = 0.25;
+export const MAX_ZOOM = 3;
+export const MAX_SWIPE_SPEED = 600;
+export const SWIPE_FRICTION = 1200;

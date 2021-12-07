@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, minimum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Wide World</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      body {
+        background: #000;
+        touch-action: none;
+      }
+      input {
+        font-size: 12px;
+      }
+      #loading {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+        color: #fff;
+      }
+      #loading span {
+        text-transform: uppercase;
+      }
+      #settings {
+        position: absolute;
+        right: 0;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        background: #000;
+        color: #fff;
+        font-size: 12px;
+        z-index: 999;
+      }
+      #settings label {
+        padding: 0.5rem;
+      }
+      #size,
+      #seed {
+        background: #000;
+        border: 1px solid #fff;
+        color: #fff;
+      }
+      #help {
+        padding: 1rem;
+        position: absolute;
+        bottom: 0;
+        font-size: 0.75rem;
+        color: #fff;
+      }
+      canvas {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="c" width="1600" height="1200" style="width: 800px; height: 600px"></canvas>
+    <div id="settings">
+      <label>
+        <span>Size</span>
+        <select id="size">
+          <option value="64">64x64</option>
+          <option value="128" selected>128x128</option>
+          <option value="256">256x256</option>
+        </select>
+        </label>
+      <label>
+        <span>Seed</span>
+        <input id="seed" value="255" type="number" step="1" min="0" max="4294967295" inputmode="numeric" />
+      </label>
+    </div>
+    <div id="loading"><span>Loading</span></div>
+    <div id="help">Use arrows, W and S, or trackpad and touch to pan and zoom</div>
+    <script src="lib/gl-matrix.min.js"></script>
+    <script src="https://mrdoob.github.io/stats.js/build/stats.min.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        import("./index.mjs");
+      });
+    </script>
+  </body>
+</html>
