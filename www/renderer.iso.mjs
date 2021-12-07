@@ -17,10 +17,11 @@ export default function renderer(gl, tex) {
       // Find the number of cells needed to fill the length of the hypotenuse
       // Note, cells overlap by half a cell
       // Also note, distance is havled since the min/max is calculated from the center
-      const distance = Math.ceil(
+      let distance = Math.ceil(
         (hypotenuse / camera.zoom / (CELL_SIZE * SPRITE_ASPECT_RATIO)) * 0.5
       );
-
+      // Add buffer of 1 cell
+      distance += 1;
       // Find the range of tiles to loop over
       const clampRow = (v) => clamp(v, 0, level.rows);
       const clampCol = (v) => clamp(v, 0, level.cols);
